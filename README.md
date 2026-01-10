@@ -1,6 +1,6 @@
 # 🪢 Laravel Request Tracker
 
-![the dragon code laravel request tracker](https://preview.dragon-code.pro/the%20dragon%20code/request-tracker.svg?brand=laravel&mode=auto)
+![laravel request tracker](https://banners.beyondco.de/Request%20Tracker.png?theme=light&packageManager=composer+require&packageName=dragon-code%2Flaravel-request-tracker&pattern=topography&style=style_2&description=by+The+Dragon+Code&md=1&showWatermark=1&fontSize=100px&images=https%3A%2F%2Flaravel.com%2Fimg%2Flogomark.min.svg)
 
 [![Stable Version][badge_stable]][link_packagist]
 [![Total Downloads][badge_downloads]][link_packagist]
