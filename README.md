@@ -1,8 +1,8 @@
 # 🪢 Laravel Request Tracker
 
 <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://banners.beyondco.de/Laravel%20Request%20Tracker.png?theme=dark&pattern=topography&style=style_2&fontSize=100px&images=https%3A%2F%2Flaravel.com%2Fimg%2Flogomark.min.svg&packageManager=composer+require&packageName=dragon-code%2Flaravel-request-tracker&description=Laravel+adapter+for+dragon-code%2Frequest-tracker+to+trace+inter-service+request+chains&md=1&showWatermark=1">
-    <img src="https://banners.beyondco.de/Laravel%20Request%20Tracker.png?theme=light&pattern=topography&style=style_2&fontSize=100px&images=https%3A%2F%2Flaravel.com%2Fimg%2Flogomark.min.svg&packageManager=composer+require&packageName=dragon-code%2Flaravel-request-tracker&description=Laravel+adapter+for+dragon-code%2Frequest-tracker+to+trace+inter-service+request+chains&md=1&showWatermark=1" alt="Laravel Request Tracker">
+    <source media="(prefers-color-scheme: dark)" srcset="https://banners.beyondco.de/Laravel%20Request%20Tracker.png?pattern=topography&style=style_2&fontSize=100px&md=1&showWatermark=1&theme=dark&packageManager=composer+require&packageName=dragon-code%2Flaravel-request-tracker&description=Laravel+adapter+for+dragon-code%2Frequest-tracker+to+trace+inter-service+request+chains&images=https%3A%2F%2Flaravel.com%2Fimg%2Flogomark.min.svg">
+    <img src="https://banners.beyondco.de/Laravel%20Request%20Tracker.png?pattern=topography&style=style_2&fontSize=100px&md=1&showWatermark=1&theme=light&packageManager=composer+require&packageName=dragon-code%2Flaravel-request-tracker&description=Laravel+adapter+for+dragon-code%2Frequest-tracker+to+trace+inter-service+request+chains&images=https%3A%2F%2Flaravel.com%2Fimg%2Flogomark.min.svg" alt="Laravel Request Tracker">
 </picture>
 
 [![Stable Version][badge_stable]][link_packagist]
