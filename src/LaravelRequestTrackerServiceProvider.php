@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
 use Psr\Http\Message\RequestInterface;
 
+use function array_keys;
+
 class LaravelRequestTrackerServiceProvider extends ServiceProvider
 {
     public function boot(): void
@@ -51,7 +53,7 @@ class LaravelRequestTrackerServiceProvider extends ServiceProvider
     {
         $router = $this->app['router'];
 
-        foreach ($router->getMiddlewareGroups() as $name) {
+        foreach (array_keys($router->getMiddlewareGroups()) as $name) {
             $router->prependMiddlewareToGroup($name, RequestTrackerMiddleware::class);
         }
     }
