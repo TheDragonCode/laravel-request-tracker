@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace DragonCode\LaravelRequestTracker;
 
+use DragonCode\LaravelRequestTracker\Helpers\ContextHelper;
 use DragonCode\LaravelRequestTracker\Http\Middleware\RequestTrackerMiddleware;
+use DragonCode\RequestTracker\TrackerUuid;
 use Illuminate\Support\ServiceProvider;
 
 class LaravelRequestTrackerServiceProvider extends ServiceProvider
@@ -20,6 +22,7 @@ class LaravelRequestTrackerServiceProvider extends ServiceProvider
     {
         $this->registerConfig();
         $this->registerMiddleware();
+        $this->registerTrackingData();
     }
 
     protected function registerConfig(): void
@@ -37,5 +40,12 @@ class LaravelRequestTrackerServiceProvider extends ServiceProvider
         foreach ($router->getMiddlewareGroups() as $name) {
             $router->prependMiddlewareToGroup($name, RequestTrackerMiddleware::class);
         }
+    }
+
+    protected function registerTrackingData(): void
+    {
+        (new ContextHelper)
+            ->traceId(TrackerUuid::get())
+            ->store();
     }
 }

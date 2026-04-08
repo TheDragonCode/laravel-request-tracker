@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace DragonCode\LaravelRequestTracker\Http\Middleware;
 
 use Closure;
+use DragonCode\LaravelRequestTracker\Helpers\ContextHelper;
 use DragonCode\LaravelRequestTracker\Helpers\TrackerConfig;
 use DragonCode\RequestTracker\TrackerHeader;
 use DragonCode\RequestTracker\TrackerRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Context;
 use Symfony\Component\HttpFoundation\Response;
 
 class RequestTrackerMiddleware
@@ -54,10 +54,10 @@ class RequestTrackerMiddleware
 
     protected function context(TrackerRequest $request): void
     {
-        Context::add(TrackerConfig::contextKey(), [
-            'userId'  => $request->getUserId(),
-            'ip'      => $request->getIp(),
-            'traceId' => $request->getTraceId(),
-        ]);
+        (new ContextHelper)
+            ->userId($request->getUserId())
+            ->ip($request->getIp())
+            ->traceId($request->getTraceId())
+            ->store();
     }
 }

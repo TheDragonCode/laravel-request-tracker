@@ -35,11 +35,13 @@ it('sets headers and context for guest user', function () {
 
     expect($context)
         ->toBeArray()
-        ->toHaveKeys(['userId', 'ip', 'traceId']);
+        ->toHaveKeys(['ip', 'traceId', 'parentTraceId'])
+        ->not
+        ->toHaveKey('userId');
 
-    expect($context['userId'])->toBeEmpty();
     expect($context['ip'])->toBe('198.51.100.42');
-    expect($context['traceId'])->toBe($trace);
+    expect($context['traceId'])->toBeUuid()->toBe($trace);
+    expect($context['parentTraceId'])->toBeUuid();
 });
 
 it('uses authenticated user id when available', function () {
@@ -76,8 +78,8 @@ it('respects existing tracker headers', function () {
     $middleware = new RequestTrackerMiddleware;
 
     $existing = [
-        'X-Tracker-User-Id'  => '777',
-        'X-Tracker-Ip'       => '192.0.2.55',
+        'X-Tracker-User-Id' => '777',
+        'X-Tracker-Ip' => '192.0.2.55',
         'X-Tracker-Trace-Id' => (string) Str::uuid(),
     ];
 
@@ -101,4 +103,5 @@ it('respects existing tracker headers', function () {
     expect($context['userId'])->toBe('777');
     expect($context['ip'])->toBe('192.0.2.55');
     expect($context['traceId'])->toBe($existing['X-Tracker-Trace-Id']);
+    expect($context['parentTraceId'])->toBeUuid();
 });
