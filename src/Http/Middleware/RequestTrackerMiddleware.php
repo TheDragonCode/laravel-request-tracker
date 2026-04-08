@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace DragonCode\LaravelRequestTracker\Http\Middleware;
 
 use Closure;
+use DragonCode\LaravelRequestTracker\Helpers\TrackerConfig;
 use DragonCode\RequestTracker\TrackerHeader;
 use DragonCode\RequestTracker\TrackerRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Context;
 use Symfony\Component\HttpFoundation\Response;
-
-use function config;
 
 class RequestTrackerMiddleware
 {
@@ -47,23 +46,18 @@ class RequestTrackerMiddleware
     protected function headers(): TrackerHeader
     {
         return new TrackerHeader(
-            userId : config()?->string('request-tracker.headers.user_id'),
-            ip     : config()?->string('request-tracker.headers.ip'),
-            traceId: config()?->string('request-tracker.headers.trace_id'),
+            userId : TrackerConfig::headerUserId(),
+            ip     : TrackerConfig::headerIp(),
+            traceId: TrackerConfig::headerTraceId(),
         );
     }
 
     protected function context(TrackerRequest $request): void
     {
-        Context::add($this->key(), [
+        Context::add(TrackerConfig::contextKey(), [
             'userId'  => $request->getUserId(),
             'ip'      => $request->getIp(),
             'traceId' => $request->getTraceId(),
         ]);
-    }
-
-    protected function key(): string
-    {
-        return config('request-tracker.context.key');
     }
 }
