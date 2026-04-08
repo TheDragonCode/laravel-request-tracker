@@ -29,16 +29,33 @@ php artisan vendor:publish --tag="tracker"
 
 That's all 🙂
 
-Middleware is automatically registered in the application kernel.
+Middleware is automatically registered in the application kernel and Http Client.
 
 ## How It Works
 
-The middleware monitors request tracker headers in incoming requests and, when present,
-automatically injects them into the application context.
+When the application is initialized, a unique UUIDv7 is generated and written to the Laravel context information.
 
-This makes it possible to build chains of inter-service requests with filtering by an identifier.
+Laravel automatically adds this information when writing logs.
 
+Default context information:
 
+```php
+[
+    'tracker' => [
+        'traceId' => '019d6cc2-7456-7a78-bdbf-62569a688c78',
+    ],
+]
+```
+
+In addition, when incoming HTTP requests to the application, the middleware automatically retrieves the tracker headers
+and adds them to the [context](https://laravel.com/docs/context) information if they are present in the request,
+otherwise new ones are generated.
+
+In this case, the `traceId` value is replaced with the new value, and the existing value is transferred to
+`parentTraceId`.
+
+For outgoing requests, middleware is automatically registered for the Http facade, which adds tracker headers to
+outgoing requests.
 
 ## License
 
