@@ -27,18 +27,9 @@ php artisan vendor:publish --tag="tracker"
 
 ## Basic Usage
 
-Register the middleware:
-
-```php
-use DragonCode\LaravelRequestTracker\Http\Middleware\RequestTrackerMiddleware;
-use Illuminate\Foundation\Configuration\Middleware;
-
-->withMiddleware(function (Middleware $middleware): void {
-     $middleware->prepend(RequestTrackerMiddleware::class);
-})
-```
-
 That's all 🙂
+
+Middleware is automatically registered in the application kernel.
 
 ## How It Works
 

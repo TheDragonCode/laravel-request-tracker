@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DragonCode\LaravelRequestTracker;
 
+use DragonCode\LaravelRequestTracker\Http\Middleware\RequestTrackerMiddleware;
 use Illuminate\Support\ServiceProvider;
 
 class LaravelRequestTrackerServiceProvider extends ServiceProvider
@@ -17,6 +18,24 @@ class LaravelRequestTrackerServiceProvider extends ServiceProvider
 
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/request-tracker.php', 'request-tracker');
+        $this->registerConfig();
+        $this->registerMiddleware();
+    }
+
+    protected function registerConfig(): void
+    {
+        $this->mergeConfigFrom(
+            __DIR__ . '/../config/request-tracker.php',
+            'request-tracker'
+        );
+    }
+
+    protected function registerMiddleware(): void
+    {
+        $router = $this->app['router'];
+
+        foreach ($router->getMiddlewareGroups() as $name) {
+            $router->prependMiddlewareToGroup($name, RequestTrackerMiddleware::class);
+        }
     }
 }
