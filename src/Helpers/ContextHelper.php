@@ -4,76 +4,46 @@ declare(strict_types=1);
 
 namespace DragonCode\LaravelRequestTracker\Helpers;
 
-use Illuminate\Contracts\Support\Arrayable;
+use DragonCode\LaravelRequestTracker\Data\ContextData;
+use DragonCode\LaravelRequestTracker\Enums\ContextKeyEnum;
 use Illuminate\Support\Facades\Context;
 
-class ContextHelper implements Arrayable
+class ContextHelper
 {
-    protected ?string $userId = null;
-
-    protected ?string $ip = null;
-
-    protected ?string $traceId = null;
-
-    public function userId(?string $id): static
+    public function store(ContextData $context): void
     {
-        $this->userId = $id;
-
-        return $this;
+        Context::add($this->key(), $context->toArray());
     }
 
-    public function ip(?string $ip): static
+    public function get(ContextKeyEnum $key): ?string
     {
-        $this->ip = $ip;
+        $data = Context::get($this->key(), []);
 
-        return $this;
+        return $data[$key->value] ?? null;
     }
 
-    public function traceId(?string $id): static
+    public function getUserId(): ?string
     {
-        $this->traceId = $id;
-
-        return $this;
+        return $this->get(ContextKeyEnum::UserId);
     }
 
-    public function toArray(): array
+    public function getIp(): ?string
     {
-        $result = [];
-
-        if ($this->userId) {
-            $result['userId'] = $this->userId;
-        }
-
-        if ($this->ip) {
-            $result['ip'] = $this->ip;
-        }
-
-        if ($this->traceId) {
-            $result['traceId'] = $this->traceId;
-        }
-
-        if ($trace = $this->getParentTraceId()) {
-            $result['parentTraceId'] = $trace;
-        }
-
-        return $result;
+        return $this->get(ContextKeyEnum::Ip);
     }
 
-    public function store(): void
+    public function getTraceId(): ?string
     {
-        Context::add(TrackerConfig::contextKey(), $this->toArray());
+        return $this->get(ContextKeyEnum::TraceId);
     }
 
-    protected function getParentTraceId(): ?string
+    public function getParentTraceId(): ?string
     {
-        $context = Context::get(TrackerConfig::contextKey(), []);
+        return $this->get(ContextKeyEnum::ParentTraceId);
+    }
 
-        if ($parent = $context['parentTraceId'] ?? null) {
-            return $parent;
-        }
-
-        $trace = $context['traceId'] ?? null;
-
-        return $trace === $this->traceId ? null : $trace;
+    protected function key(): string
+    {
+        return TrackerConfig::contextKey();
     }
 }
