@@ -27,7 +27,7 @@ it('sets headers and context for guest user', function () {
     $ip     = $captured->headers->get('X-Tracker-Ip');
     $trace  = $captured->headers->get('X-Tracker-Trace-Id');
 
-    expect($userId)->toBe('0');
+    expect($userId)->toBeEmpty();
     expect($ip)->toBe('198.51.100.42');
     expect($trace)->not()->toBeEmpty()->and(Str::isUuid($trace))->toBeTrue();
 
@@ -37,7 +37,7 @@ it('sets headers and context for guest user', function () {
         ->toBeArray()
         ->toHaveKeys(['userId', 'ip', 'traceId']);
 
-    expect($context['userId'])->toBe('0');
+    expect($context['userId'])->toBeEmpty();
     expect($context['ip'])->toBe('198.51.100.42');
     expect($context['traceId'])->toBe($trace);
 });
