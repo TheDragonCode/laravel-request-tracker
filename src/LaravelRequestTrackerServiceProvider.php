@@ -9,27 +9,35 @@ use DragonCode\LaravelRequestTracker\Helpers\ContextHelper;
 use DragonCode\LaravelRequestTracker\Helpers\TrackerConfig;
 use DragonCode\LaravelRequestTracker\Http\Middleware\RequestTrackerMiddleware;
 use DragonCode\RequestTracker\TrackerUuid;
+use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
 use Psr\Http\Message\RequestInterface;
 
-use function array_keys;
-
 class LaravelRequestTrackerServiceProvider extends ServiceProvider
 {
-    public function boot(): void
+    public function boot(Kernel $http): void
     {
-        $this->publishes([
-            __DIR__ . '/../config/request-tracker.php' => $this->app->configPath('request-tracker.php'),
-        ], ['config', 'tracker']);
+        $this->bootConfig();
+        $this->registerMiddleware($http);
     }
 
     public function register(): void
     {
         $this->registerConfig();
         $this->registerTrackingData();
-        $this->registerMiddleware();
-        $this->registerHttpMiddleware();
+        $this->registerHttpClient();
+    }
+
+    protected function bootConfig(): void
+    {
+        if (! $this->app->runningInConsole()) {
+            return;
+        }
+
+        $this->publishes([
+            __DIR__ . '/../config/request-tracker.php' => $this->app->configPath('request-tracker.php'),
+        ], ['config', 'tracker']);
     }
 
     protected function registerConfig(): void
@@ -49,16 +57,14 @@ class LaravelRequestTrackerServiceProvider extends ServiceProvider
         $this->app->make(ContextHelper::class)->store($data);
     }
 
-    protected function registerMiddleware(): void
+    protected function registerMiddleware(Kernel $http): void
     {
-        $router = $this->app['router'];
-
-        foreach (array_keys($router->getMiddlewareGroups()) as $name) {
-            $router->prependMiddlewareToGroup($name, RequestTrackerMiddleware::class);
+        if (! $http->hasMiddleware(RequestTrackerMiddleware::class)) {
+            $http->prependMiddleware(RequestTrackerMiddleware::class);
         }
     }
 
-    protected function registerHttpMiddleware(): void
+    protected function registerHttpClient(): void
     {
         Http::globalRequestMiddleware(function (RequestInterface $request) {
             $context = $this->app->make(ContextHelper::class);
