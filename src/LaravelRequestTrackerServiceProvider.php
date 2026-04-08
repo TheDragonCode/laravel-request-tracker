@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace DragonCode\LaravelRequestTracker;
 
+use DragonCode\LaravelRequestTracker\Data\ContextData;
 use DragonCode\LaravelRequestTracker\Helpers\ContextHelper;
+use DragonCode\LaravelRequestTracker\Helpers\TrackerConfig;
 use DragonCode\LaravelRequestTracker\Http\Middleware\RequestTrackerMiddleware;
 use DragonCode\RequestTracker\TrackerUuid;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
+use Psr\Http\Message\RequestInterface;
 
 class LaravelRequestTrackerServiceProvider extends ServiceProvider
 {
@@ -21,8 +25,9 @@ class LaravelRequestTrackerServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->registerConfig();
-        $this->registerMiddleware();
         $this->registerTrackingData();
+        $this->registerMiddleware();
+        $this->registerHttpMiddleware();
     }
 
     protected function registerConfig(): void
@@ -31,6 +36,15 @@ class LaravelRequestTrackerServiceProvider extends ServiceProvider
             __DIR__ . '/../config/request-tracker.php',
             'request-tracker'
         );
+    }
+
+    protected function registerTrackingData(): void
+    {
+        $data = new ContextData(
+            traceId: TrackerUuid::get(),
+        );
+
+        $this->app->make(ContextHelper::class)->store($data);
     }
 
     protected function registerMiddleware(): void
@@ -42,10 +56,15 @@ class LaravelRequestTrackerServiceProvider extends ServiceProvider
         }
     }
 
-    protected function registerTrackingData(): void
+    protected function registerHttpMiddleware(): void
     {
-        (new ContextHelper)
-            ->traceId(TrackerUuid::get())
-            ->store();
+        Http::globalRequestMiddleware(function (RequestInterface $request) {
+            $context = $this->app->make(ContextHelper::class);
+
+            return $request
+                ->withHeader(TrackerConfig::headerUserId(), $context->getUserId())
+                ->withHeader(TrackerConfig::headerIp(), $context->getIp())
+                ->withHeader(TrackerConfig::headerTraceId(), $context->getTraceId());
+        });
     }
 }

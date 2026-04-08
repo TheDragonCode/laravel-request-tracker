@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 it('sets headers and context for guest user', function () {
-    $middleware = new RequestTrackerMiddleware;
+    $middleware = app(RequestTrackerMiddleware::class);
 
     $captured = null;
 
@@ -45,7 +45,7 @@ it('sets headers and context for guest user', function () {
 });
 
 it('uses authenticated user id when available', function () {
-    $middleware = new RequestTrackerMiddleware;
+    $middleware = app(RequestTrackerMiddleware::class);
 
     $user = new class {
         public function getKey(): int
@@ -75,7 +75,7 @@ it('uses authenticated user id when available', function () {
 });
 
 it('respects existing tracker headers', function () {
-    $middleware = new RequestTrackerMiddleware;
+    $middleware = app(RequestTrackerMiddleware::class);
 
     $existing = [
         'X-Tracker-User-Id' => '777',
