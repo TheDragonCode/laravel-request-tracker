@@ -11,6 +11,7 @@ use DragonCode\LaravelRequestTracker\Helpers\TrackerConfig;
 use DragonCode\RequestTracker\TrackerHeader;
 use DragonCode\RequestTracker\TrackerRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class TrackerMiddleware
@@ -38,9 +39,18 @@ class TrackerMiddleware
 
     protected function trace(TrackerRequest $tracker): void
     {
-        $tracker->userId($tracker->getRequest()?->user()?->getKey());
+        $tracker->userId($this->userId());
         $tracker->ip();
         $tracker->traceId();
+    }
+
+    protected function userId(): ?int
+    {
+        if (! Auth::hasUser()) {
+            return null;
+        }
+
+        return Auth::id();
     }
 
     protected function tracker(Request $request): TrackerRequest
