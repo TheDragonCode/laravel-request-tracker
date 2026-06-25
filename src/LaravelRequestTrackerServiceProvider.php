@@ -7,8 +7,7 @@ namespace DragonCode\LaravelRequestTracker;
 use DragonCode\LaravelRequestTracker\Data\ContextData;
 use DragonCode\LaravelRequestTracker\Helpers\ContextHelper;
 use DragonCode\LaravelRequestTracker\Helpers\TrackerConfig;
-use DragonCode\LaravelRequestTracker\Http\Middleware\AppendTrackerMiddleware;
-use DragonCode\LaravelRequestTracker\Http\Middleware\PrependTrackerMiddleware;
+use DragonCode\LaravelRequestTracker\Http\Middleware\TrackerMiddleware;
 use DragonCode\RequestTracker\TrackerUuid;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Http;
@@ -60,12 +59,8 @@ class LaravelRequestTrackerServiceProvider extends ServiceProvider
 
     protected function registerMiddleware(Kernel $http): void
     {
-        if (! $http->hasMiddleware(PrependTrackerMiddleware::class)) {
-            $http->prependMiddleware(PrependTrackerMiddleware::class);
-        }
-
-        if (! $http->hasMiddleware(AppendTrackerMiddleware::class)) {
-            $http->pushMiddleware(AppendTrackerMiddleware::class);
+        if (! $http->hasMiddleware(TrackerMiddleware::class)) {
+            $http->prependMiddleware(TrackerMiddleware::class);
         }
     }
 

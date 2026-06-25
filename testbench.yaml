@@ -7,7 +7,7 @@ workbench:
     install: true
     health: false
     discovers:
-        web: true
+        web: false
         api: true
         commands: true
         components: false
