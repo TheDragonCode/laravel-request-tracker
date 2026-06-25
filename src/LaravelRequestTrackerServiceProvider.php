@@ -79,7 +79,7 @@ class LaravelRequestTrackerServiceProvider extends ServiceProvider
             $context = $this->app->make(ContextHelper::class);
 
             foreach ($context->getHeaders() as $name => $value) {
-                $request->withHeader($name, $value);
+                $request = $request->withHeader($name, $value);
             }
 
             return $request;
