@@ -64,10 +64,6 @@ class LaravelRequestTrackerServiceProvider extends ServiceProvider
 
     protected function registerMiddleware(Kernel $http): void
     {
-        if ($this->app->routesAreCached()) {
-            return;
-        }
-
         $http->prependMiddleware(TrackerMiddleware::class);
         $http->appendToMiddlewarePriority(UserMiddleware::class);
 

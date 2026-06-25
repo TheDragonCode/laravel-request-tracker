@@ -11,7 +11,10 @@ pest()
 
 pest()
     ->extend(TestCase::class, WithWorkbench::class)
-    ->in('Feature')
+    ->in('Feature', 'Unit')
     ->beforeEach(function () {
         mockUuid();
+    })
+    ->afterEach(function () {
+        expect('fallback')->toMatchSnapshot();
     });

@@ -14,12 +14,12 @@ class UserMiddleware extends Middleware
         $tracker->userId($this->userId());
     }
 
-    protected function userId(): ?int
+    protected function userId(): ?string
     {
         if (! Auth::hasUser()) {
             return null;
         }
 
-        return Auth::id();
+        return (string) Auth::id();
     }
 }
