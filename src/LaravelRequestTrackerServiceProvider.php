@@ -6,7 +6,6 @@ namespace DragonCode\LaravelRequestTracker;
 
 use DragonCode\LaravelRequestTracker\Data\ContextData;
 use DragonCode\LaravelRequestTracker\Helpers\ContextHelper;
-use DragonCode\LaravelRequestTracker\Helpers\TrackerConfig;
 use DragonCode\LaravelRequestTracker\Http\Middleware\TrackerMiddleware;
 use DragonCode\LaravelRequestTracker\Http\Middleware\UserMiddleware;
 use DragonCode\RequestTracker\TrackerUuid;
@@ -79,10 +78,11 @@ class LaravelRequestTrackerServiceProvider extends ServiceProvider
         Http::globalRequestMiddleware(function (RequestInterface $request) {
             $context = $this->app->make(ContextHelper::class);
 
-            return $request
-                ->withHeader(TrackerConfig::headerUserId(), $context->getUserId())
-                ->withHeader(TrackerConfig::headerIp(), $context->getIp())
-                ->withHeader(TrackerConfig::headerTraceId(), $context->getTraceId());
+            foreach ($context->getHeaders() as $name => $value) {
+                $request->withHeader($name, $value);
+            }
+
+            return $request;
         });
     }
 
