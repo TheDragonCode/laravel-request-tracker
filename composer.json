@@ -64,8 +64,7 @@
     "scripts": {
         "post-update-cmd": [
             "@php vendor/bin/codestyle pint 8.2 --ansi",
-            "@php vendor/bin/codestyle editorconfig --ansi",
-            "composer normalize --ansi"
+            "@php vendor/bin/codestyle editorconfig --ansi"
         ],
         "post-autoload-dump": [
             "@clear",
@@ -73,7 +72,10 @@
         ],
         "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
         "prepare": "@php vendor/bin/testbench package:discover --ansi",
-        "style": "@php vendor/bin/pint",
+        "style": [
+            "@composer normalize --ansi",
+            "@php vendor/bin/pint"
+        ],
         "test": "vendor/bin/pest",
         "test:coverage": "vendor/bin/pest --coverage",
         "test:type": "vendor/bin/pest --type-coverage --compact --min=95"
