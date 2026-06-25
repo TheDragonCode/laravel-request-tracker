@@ -10,6 +10,7 @@ use DragonCode\LaravelRequestTracker\Helpers\TrackerConfig;
 use DragonCode\LaravelRequestTracker\Http\Middleware\TrackerMiddleware;
 use DragonCode\LaravelRequestTracker\Http\Middleware\UserMiddleware;
 use DragonCode\RequestTracker\TrackerUuid;
+use GuzzleHttp\Client;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
@@ -30,6 +31,7 @@ class LaravelRequestTrackerServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerTrackingData();
         $this->registerHttpClient();
+        $this->registerGuzzle();
     }
 
     protected function bootConfig(): void
@@ -81,6 +83,21 @@ class LaravelRequestTrackerServiceProvider extends ServiceProvider
                 ->withHeader(TrackerConfig::headerUserId(), $context->getUserId())
                 ->withHeader(TrackerConfig::headerIp(), $context->getIp())
                 ->withHeader(TrackerConfig::headerTraceId(), $context->getTraceId());
+        });
+    }
+
+    protected function registerGuzzle(): void
+    {
+        $this->app->scoped(Client::class, function () {
+            $context = $this->app->make(ContextHelper::class);
+
+            return new Client([
+                'headers' => [
+                    TrackerConfig::headerUserId()  => $context->getUserId(),
+                    TrackerConfig::headerIp()      => $context->getIp(),
+                    TrackerConfig::headerTraceId() => $context->getTraceId(),
+                ],
+            ]);
         });
     }
 }

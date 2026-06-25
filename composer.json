@@ -27,6 +27,7 @@
     },
     "require-dev": {
         "dragon-code/codestyler": "^6.3",
+        "guzzlehttp/guzzle": "^7.0",
         "mockery/mockery": "^1.6",
         "orchestra/testbench": "^9.0 || ^10.0 || ^11.0",
         "pestphp/pest": "^3.0 || ^4.0",
