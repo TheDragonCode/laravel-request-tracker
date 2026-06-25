@@ -9,6 +9,7 @@ use DragonCode\LaravelRequestTracker\Enums\ContextKeyEnum;
 use DragonCode\LaravelRequestTracker\Transformers\ContextTransformer;
 use Illuminate\Support\Facades\Context;
 
+use function array_filter;
 use function array_merge;
 
 class ContextHelper
@@ -34,6 +35,15 @@ class ContextHelper
     public function all(): array
     {
         return Context::get($this->key(), []);
+    }
+
+    public function headers(): array
+    {
+        return array_filter([
+            TrackerConfig::headerUserId()  => $this->getUserId(),
+            TrackerConfig::headerIp()      => $this->getIp(),
+            TrackerConfig::headerTraceId() => $this->getTraceId(),
+        ]);
     }
 
     public function getUserId(): ?string
