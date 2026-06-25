@@ -10,4 +10,4 @@ pest()
 
 pest()
     ->extend(TestCase::class)
-    ->in('Feature');
+    ->in('Unit');
