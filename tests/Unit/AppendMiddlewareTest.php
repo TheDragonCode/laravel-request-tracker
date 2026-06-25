@@ -69,8 +69,8 @@ it('respects existing tracker headers', function () {
     $middleware = app(AppendTrackerMiddleware::class);
 
     $existing = [
-        'X-Tracker-User-Id' => '777',
-        'X-Tracker-Ip' => '192.0.2.55',
+        'X-Tracker-User-Id'  => '777',
+        'X-Tracker-Ip'       => '192.0.2.55',
         'X-Tracker-Trace-Id' => (string) Str::uuid(),
     ];
 
