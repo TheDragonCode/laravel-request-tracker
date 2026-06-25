@@ -11,4 +11,7 @@ pest()
 
 pest()
     ->extend(TestCase::class, WithWorkbench::class)
-    ->in('Feature');
+    ->in('Feature')
+    ->beforeEach(function () {
+        mockUuid();
+    });
