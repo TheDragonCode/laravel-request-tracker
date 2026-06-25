@@ -23,7 +23,7 @@ class ContextHelper
     {
         $data = $this->all();
 
-        return $data[$key->value] ?? null;
+        return (string) ($data[$key->value] ?? null);
     }
 
     public function all(): array
