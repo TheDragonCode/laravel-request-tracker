@@ -10,6 +10,7 @@ use DragonCode\LaravelRequestTracker\Helpers\ContextHelper;
 use DragonCode\LaravelRequestTracker\Helpers\TrackerConfig;
 use DragonCode\RequestTracker\TrackerHeader;
 use DragonCode\RequestTracker\TrackerRequest;
+use DragonCode\RequestTracker\TrackerUuid;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -17,6 +18,7 @@ abstract class Middleware
 {
     public function __construct(
         protected ContextHelper $helper,
+        protected TrackerUuid $uuid,
     ) {}
 
     public function handle(Request $request, Closure $next): Response
@@ -38,7 +40,7 @@ abstract class Middleware
 
     protected function tracker(Request $request): TrackerRequest
     {
-        return new TrackerRequest($request, $this->headers());
+        return new TrackerRequest($request, $this->headers(), $this->uuid);
     }
 
     protected function headers(): TrackerHeader

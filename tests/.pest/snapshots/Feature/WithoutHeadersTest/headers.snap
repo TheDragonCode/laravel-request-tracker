@@ -1,0 +1,11 @@
+{
+    "headers": {
+        "userId": null,
+        "ip": "127.0.0.1",
+        "traceId": "019f0068-357b-741b-97bd-1299d104fb5a"
+    },
+    "context": {
+        "traceId": "019f0068-357b-741b-97bd-1299d104fb5a",
+        "ip": "127.0.0.1"
+    }
+}

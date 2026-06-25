@@ -53,8 +53,10 @@ class LaravelRequestTrackerServiceProvider extends ServiceProvider
 
     protected function registerTrackingData(): void
     {
+        $this->app->singleton(TrackerUuid::class);
+
         $data = new ContextData(
-            traceId: TrackerUuid::get(),
+            traceId: $this->app->make(TrackerUuid::class)->generate(),
         );
 
         $this->app->make(ContextHelper::class)->store($data);

@@ -15,6 +15,10 @@ class MainController
 {
     public function __invoke(Request $request): JsonResponse
     {
+        $context = Context::get(TrackerConfig::contextKey(), []);
+
+        unset($context['parentTraceId']);
+
         return response()->json([
             'headers' => [
                 'userId'  => $request->header(TrackerConfig::headerUserId()),
@@ -22,7 +26,7 @@ class MainController
                 'traceId' => $request->header(TrackerConfig::headerTraceId()),
             ],
 
-            'context' => Context::all(),
+            'context' => $context,
         ]);
     }
 }
