@@ -6,6 +6,7 @@ namespace DragonCode\LaravelRequestTracker\Helpers;
 
 use DragonCode\LaravelRequestTracker\Data\ContextData;
 use DragonCode\LaravelRequestTracker\Enums\ContextKeyEnum;
+use DragonCode\LaravelRequestTracker\Transformers\ContextTransformer;
 use Illuminate\Support\Facades\Context;
 
 use function array_merge;
@@ -14,7 +15,9 @@ class ContextHelper
 {
     public function store(ContextData $context): void
     {
-        $data = array_merge($this->all(), $context->toArray());
+        $transformed = new ContextTransformer($context);
+
+        $data = array_merge($this->all(), $transformed->toArray());
 
         Context::add($this->key(), $data);
     }
