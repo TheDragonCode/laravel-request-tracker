@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use DragonCode\LaravelRequestTracker\Http\Middleware\AppendTrackerMiddleware;
+use DragonCode\LaravelRequestTracker\Http\Middleware\TrackerMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 it('sets headers and context for guest user', function () {
-    $middleware = app(AppendTrackerMiddleware::class);
+    $middleware = app(TrackerMiddleware::class);
 
     $captured = null;
 
@@ -24,19 +24,28 @@ it('sets headers and context for guest user', function () {
     expect($response->getStatusCode())->toBe(200);
 
     $userId = $captured->headers->get('X-Tracker-User-Id');
+    $ip     = $captured->headers->get('X-Tracker-Ip');
+    $trace  = $captured->headers->get('X-Tracker-Trace-Id');
 
     expect($userId)->toBeEmpty();
+    expect($ip)->toBe('198.51.100.42');
+    expect($trace)->not()->toBeEmpty()->and(Str::isUuid($trace))->toBeTrue();
 
     $context = context('tracker');
 
     expect($context)
         ->toBeArray()
+        ->toHaveKeys(['ip', 'traceId', 'parentTraceId'])
         ->not
-        ->toHaveKeys(['ip', 'traceId', 'userId']);
+        ->toHaveKey('userId');
+
+    expect($context['ip'])->toBe('198.51.100.42');
+    expect($context['traceId'])->toBeUuid()->toBe($trace);
+    expect($context['parentTraceId'])->toBeUuid();
 });
 
 it('uses authenticated user id when available', function () {
-    $middleware = app(AppendTrackerMiddleware::class);
+    $middleware = app(TrackerMiddleware::class);
 
     $user = new class {
         public function getKey(): int
@@ -66,11 +75,11 @@ it('uses authenticated user id when available', function () {
 });
 
 it('respects existing tracker headers', function () {
-    $middleware = app(AppendTrackerMiddleware::class);
+    $middleware = app(TrackerMiddleware::class);
 
     $existing = [
-        'X-Tracker-User-Id'  => '777',
-        'X-Tracker-Ip'       => '192.0.2.55',
+        'X-Tracker-User-Id' => '777',
+        'X-Tracker-Ip' => '192.0.2.55',
         'X-Tracker-Trace-Id' => (string) Str::uuid(),
     ];
 
@@ -92,6 +101,7 @@ it('respects existing tracker headers', function () {
     $context = context('tracker');
 
     expect($context['userId'])->toBe('777');
-
-    expect($context)->not->toHaveKeys(['ip', 'traceId']);
+    expect($context['ip'])->toBe('192.0.2.55');
+    expect($context['traceId'])->toBe($existing['X-Tracker-Trace-Id']);
+    expect($context['parentTraceId'])->toBeUuid();
 });
