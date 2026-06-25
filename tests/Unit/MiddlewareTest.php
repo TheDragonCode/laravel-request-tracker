@@ -6,6 +6,7 @@ use DragonCode\LaravelRequestTracker\Http\Middleware\TrackerMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
+use Workbench\App\Models\User;
 
 it('sets headers and context for guest user', function () {
     $middleware = app(TrackerMiddleware::class);
@@ -47,17 +48,10 @@ it('sets headers and context for guest user', function () {
 it('uses authenticated user id when available', function () {
     $middleware = app(TrackerMiddleware::class);
 
-    $user = new class {
-        public function getKey(): int
-        {
-            return 123;
-        }
-    };
-
     $captured = null;
 
     $middleware->handle(
-        makeRequest(userResolver: fn () => $user),
+        makeRequest(user: new User),
         function (Request $request) use (&$captured): Response {
             $captured = $request;
 
