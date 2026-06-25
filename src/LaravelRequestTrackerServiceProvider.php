@@ -91,7 +91,7 @@ class LaravelRequestTrackerServiceProvider extends ServiceProvider
         $this->app->scoped(Client::class, function () {
             $context = $this->app->make(ContextHelper::class);
 
-            return new Client(['headers' => $context->headers()]);
+            return new Client(['headers' => $context->getHeaders()]);
         });
     }
 }

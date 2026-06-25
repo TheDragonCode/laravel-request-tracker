@@ -37,7 +37,7 @@ class ContextHelper
         return Context::get($this->key(), []);
     }
 
-    public function headers(): array
+    public function getHeaders(): array
     {
         return array_filter([
             TrackerConfig::headerUserId()  => $this->getUserId(),
