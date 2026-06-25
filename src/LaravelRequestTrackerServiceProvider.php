@@ -8,11 +8,14 @@ use DragonCode\LaravelRequestTracker\Data\ContextData;
 use DragonCode\LaravelRequestTracker\Helpers\ContextHelper;
 use DragonCode\LaravelRequestTracker\Helpers\TrackerConfig;
 use DragonCode\LaravelRequestTracker\Http\Middleware\TrackerMiddleware;
+use DragonCode\LaravelRequestTracker\Http\Middleware\UserMiddleware;
 use DragonCode\RequestTracker\TrackerUuid;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
 use Psr\Http\Message\RequestInterface;
+
+use function array_keys;
 
 class LaravelRequestTrackerServiceProvider extends ServiceProvider
 {
@@ -59,8 +62,15 @@ class LaravelRequestTrackerServiceProvider extends ServiceProvider
 
     protected function registerMiddleware(Kernel $http): void
     {
-        if (! $http->hasMiddleware(TrackerMiddleware::class)) {
-            $http->prependMiddleware(TrackerMiddleware::class);
+        if ($this->app->routesAreCached()) {
+            return;
+        }
+
+        $http->prependMiddleware(TrackerMiddleware::class);
+        $http->appendToMiddlewarePriority(UserMiddleware::class);
+
+        foreach (array_keys($http->getMiddlewareGroups()) as $group) {
+            $http->appendMiddlewareToGroup($group, UserMiddleware::class);
         }
     }
 

@@ -11,4 +11,4 @@ pest()
 
 pest()
     ->extend(TestCase::class, WithWorkbench::class)
-    ->in('Feature', 'Unit');
+    ->in('Feature');

@@ -8,18 +8,27 @@ use DragonCode\LaravelRequestTracker\Data\ContextData;
 use DragonCode\LaravelRequestTracker\Enums\ContextKeyEnum;
 use Illuminate\Support\Facades\Context;
 
+use function array_merge;
+
 class ContextHelper
 {
     public function store(ContextData $context): void
     {
-        Context::add($this->key(), $context->toArray());
+        $data = array_merge($this->all(), $context->toArray());
+
+        Context::add($this->key(), $data);
     }
 
     public function get(ContextKeyEnum $key): ?string
     {
-        $data = Context::get($this->key(), []);
+        $data = $this->all();
 
         return $data[$key->value] ?? null;
+    }
+
+    public function all(): array
+    {
+        return Context::get($this->key(), []);
     }
 
     public function getUserId(): ?string
