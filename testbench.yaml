@@ -1,0 +1,15 @@
+laravel: '@testbench'
+
+providers:
+    - DragonCode\LaravelRequestTracker\LaravelRequestTrackerServiceProvider
+
+workbench:
+    install: true
+    health: false
+    discovers:
+        web: true
+        api: true
+        commands: true
+        components: false
+        factories: false
+        views: false
