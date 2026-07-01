@@ -1,0 +1,10 @@
+{
+    "userId": 2,
+    "pageId": 3,
+    "accept": true,
+    "headers": {
+        "X-Tracker-User-Id": "2",
+        "X-Tracker-Ip": "127.0.0.1",
+        "X-Tracker-Trace-Id": "019f0068-357b-741b-97bd-1299d104fb5a"
+    }
+}

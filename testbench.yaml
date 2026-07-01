@@ -2,6 +2,7 @@ laravel: '@testbench'
 
 providers:
     - DragonCode\LaravelRequestTracker\LaravelRequestTrackerServiceProvider
+    - Workbench\App\Providers\PolicyServiceProvider
 
 workbench:
     install: true
@@ -9,7 +10,15 @@ workbench:
     discovers:
         web: false
         api: true
+        config: true
         commands: true
         components: false
-        factories: false
+        factories: true
         views: false
+    build:
+        - create-sqlite-db
+        - db-wipe
+        - migrate-fresh
+
+migrations:
+    - workbench/database/migrations
