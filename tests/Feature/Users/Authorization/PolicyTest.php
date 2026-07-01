@@ -8,6 +8,10 @@ use Workbench\App\Models\User;
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\getJson;
 
+beforeEach(
+    fn () => setParentTraceId()
+);
+
 test('success', function () {
     $user = User::factory()->state([
         'id' => 2,
@@ -30,14 +34,13 @@ test('success', function () {
 });
 
 test('deny', function () {
-    $page = Page::factory()->create();
+    $page1 = Page::factory()->create();
+    $page2 = Page::factory()->create();
 
-    actingAs($page->user);
+    actingAs($page1->user);
 
-    expect($page->id)->not->toBe(999);
-
-    getJson(route('authorization.policy.show', ['page' => 999]))
-        ->assertNotFound();
+    getJson(route('authorization.policy.show', ['page' => $page2->id]))
+        ->assertForbidden();
 });
 
 test('unauthorized', function () {

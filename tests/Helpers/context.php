@@ -19,3 +19,14 @@ function setContext(): void
 
     Context::add($root, $context);
 }
+
+function setParentTraceId(): void
+{
+    $root = TrackerConfig::contextKey();
+
+    $context = Context::get($root, []);
+
+    $context['parentTraceId'] = fakeUuid(false);
+
+    Context::add($root, $context);
+}

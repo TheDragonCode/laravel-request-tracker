@@ -2,9 +2,12 @@
     "userId": 2,
     "pageId": 3,
     "accept": true,
-    "headers": {
-        "X-Tracker-User-Id": "2",
-        "X-Tracker-Ip": "127.0.0.1",
-        "X-Tracker-Trace-Id": "019f0068-357b-741b-97bd-1299d104fb5a"
+    "context": {
+        "tracker": {
+            "traceId": "019f0068-357b-741b-97bd-1299d104fb5a",
+            "parentTraceId": "019f0081-dd38-71e2-b6e3-180044c32de2",
+            "userId": "2",
+            "ip": "127.0.0.1"
+        }
     }
 }

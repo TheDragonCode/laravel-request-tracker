@@ -7,22 +7,25 @@ namespace DragonCode\LaravelRequestTracker;
 use DragonCode\LaravelRequestTracker\Data\ContextData;
 use DragonCode\LaravelRequestTracker\Helpers\ContextHelper;
 use DragonCode\LaravelRequestTracker\Http\Middleware\TrackerMiddleware;
-use DragonCode\LaravelRequestTracker\Http\Middleware\UserMiddleware;
+use DragonCode\LaravelRequestTracker\Listeners\LoggedListener;
+use DragonCode\LaravelRequestTracker\Listeners\LogoutListener;
 use DragonCode\RequestTracker\TrackerUuid;
 use GuzzleHttp\Client;
+use Illuminate\Auth\Events\Authenticated;
+use Illuminate\Auth\Events\Logout;
 use Illuminate\Contracts\Http\Kernel;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\ServiceProvider;
 use Psr\Http\Message\RequestInterface;
-
-use function array_keys;
 
 class LaravelRequestTrackerServiceProvider extends ServiceProvider
 {
     public function boot(Kernel $http): void
     {
         $this->bootConfig();
-        $this->registerMiddleware($http);
+        $this->bootEvents();
+        $this->bootMiddleware($http);
     }
 
     public function register(): void
@@ -63,14 +66,15 @@ class LaravelRequestTrackerServiceProvider extends ServiceProvider
         $this->app->make(ContextHelper::class)->store($data);
     }
 
-    protected function registerMiddleware(Kernel $http): void
+    protected function bootEvents(): void
+    {
+        Event::listen(Authenticated::class, LoggedListener::class);
+        Event::listen(Logout::class, LogoutListener::class);
+    }
+
+    protected function bootMiddleware(Kernel $http): void
     {
         $http->prependMiddleware(TrackerMiddleware::class);
-        $http->appendToMiddlewarePriority(UserMiddleware::class);
-
-        foreach (array_keys($http->getMiddlewareGroups()) as $group) {
-            $http->appendMiddlewareToGroup($group, UserMiddleware::class);
-        }
     }
 
     protected function registerHttpClient(): void
