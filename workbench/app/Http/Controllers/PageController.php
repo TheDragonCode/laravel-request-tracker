@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Workbench\App\Http\Controllers;
 
-use DragonCode\LaravelRequestTracker\Helpers\TrackerConfig;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Context;
 use Workbench\App\Models\Page;
 
 class PageController
@@ -21,11 +21,7 @@ class PageController
 
             'accept' => $userId === $page->user_id,
 
-            'headers' => [
-                TrackerConfig::headerUserId()  => $request->headers->get(TrackerConfig::headerUserId()),
-                TrackerConfig::headerIp()      => $request->headers->get(TrackerConfig::headerIp()),
-                TrackerConfig::headerTraceId() => $request->headers->get(TrackerConfig::headerTraceId()),
-            ],
+            'context' => Context::all(),
         ]);
     }
 }

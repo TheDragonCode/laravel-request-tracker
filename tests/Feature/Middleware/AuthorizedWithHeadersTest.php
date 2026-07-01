@@ -10,7 +10,7 @@ use function Pest\Laravel\actingAs;
 use function Pest\Laravel\getJson;
 
 test('headers', function () {
-    actingAs(new User);
+    actingAs(new User(['id' => 123]));
 
     $headers = new TrackerHeader(
         userId : TrackerConfig::headerUserId(),
