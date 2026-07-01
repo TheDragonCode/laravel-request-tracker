@@ -37,6 +37,15 @@ class ContextHelper
         return Context::get($this->key(), []);
     }
 
+    public function forget(ContextKeyEnum $key): void
+    {
+        $data = $this->all();
+
+        unset($data[$key->value]);
+
+        Context::add($this->key(), $data);
+    }
+
     public function getHeaders(): array
     {
         return array_filter([
