@@ -1,0 +1,13 @@
+{
+    "before": {
+        "userId": 123,
+        "ip": "192.0.2.55",
+        "traceId": "019f0068-357b-741b-97bd-1299d104fb5a",
+        "parentTraceId": "019f0081-dd38-71e2-b6e3-180044c32de2"
+    },
+    "after": {
+        "userId": 123,
+        "ip": "192.0.2.55",
+        "parentTraceId": "019f0081-dd38-71e2-b6e3-180044c32de2"
+    }
+}
